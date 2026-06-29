@@ -1,7 +1,7 @@
 import { NewsFilters } from '@/components/news/NewsFilters'
 import { NewsList } from '@/components/news/NewsList'
-import { NewsPagination } from '@/components/news/NewsPagination'
 import { EmptyContent } from '@/components/ui'
+import { Pagination } from '@/components/ui/Pagination'
 import { useNews } from '@/hooks/useNews'
 import { Loader } from 'lucide-react'
 
@@ -11,6 +11,7 @@ export default function NewsPage() {
     searchInput,
     setSearchInput,
     articles,
+    hasNextPage,
     isLoading,
     isFetching,
     isError,
@@ -48,7 +49,12 @@ export default function NewsPage() {
       )}
 
       {!isError && hasArticles && (
-        <NewsPagination page={filters.page} onNext={nextPage} onPrevious={previousPage} />
+        <Pagination
+          page={filters.page}
+          hasNextPage={hasNextPage}
+          onNext={nextPage}
+          onPrevious={previousPage}
+        />
       )}
     </main>
   )

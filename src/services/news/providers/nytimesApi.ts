@@ -1,9 +1,16 @@
 import { nyTimesClient } from '@/api/clients/apiClients.ts/apiClient'
 import type { NewsSourceApi } from '@/types/news.type'
+import { getPageSize } from '@/utils/common'
 import { getSearchQuery } from '@/utils/news'
 
 import { getProviderCategory } from '../mappers/categoryMapper'
-import { mapNyTimesArticles } from '../mappers/nyTimesMapper'
+import { mapNyTimesArticles, type NyTimesArticle } from '../mappers/nyTimesMapper'
+
+type NyTimesResponse = {
+  response: {
+    docs: NyTimesArticle[] | null
+  }
+}
 
 const formatDate = (date?: string) => date?.replaceAll('-', '')
 
@@ -19,11 +26,7 @@ export const nytimesApi: NewsSourceApi = {
   async search(params, signal) {
     const category = getProviderCategory('nytimes', params.category)
 
-    const response = await nyTimesClient.get<{
-      response: {
-        docs: unknown[] | null
-      }
-    }>({
+    const response = await nyTimesClient.get<NyTimesResponse>({
       url: '/articlesearch.json',
       signal,
       params: {
@@ -36,8 +39,9 @@ export const nytimesApi: NewsSourceApi = {
       },
     })
 
-    const articles = mapNyTimesArticles(response.data.response.docs ?? [])
-
-    return params.source === 'all' ? articles.slice(0, 6) : articles
+    return mapNyTimesArticles(response.data.response.docs ?? []).slice(
+      0,
+      getPageSize(params.source),
+    )
   },
 }

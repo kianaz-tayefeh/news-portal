@@ -1,43 +1,37 @@
 import type { Article, NewsProvider, NewsSearchParams, NewsSourceApi } from '@/types/news.type'
+import { getErrorMessage } from '@/utils/error'
 import { normalizeArticles } from '@/utils/news'
 
 import { guardianApi } from './providers/guardianApi'
 import { newsApi } from './providers/newsApi'
 import { nytimesApi } from './providers/nytimesApi'
 
-const providers: Record<NewsProvider, NewsSourceApi> = {
+const newsProviders: Record<NewsProvider, NewsSourceApi> = {
   guardian: guardianApi,
   nytimes: nytimesApi,
   newsapi: newsApi,
 }
+
+const defaultProvider = guardianApi
+
+const isRejectedResult = <T>(result: PromiseSettledResult<T>): result is PromiseRejectedResult =>
+  result.status === 'rejected'
+
 const getEnabledProviders = (params: NewsSearchParams): NewsSourceApi[] => {
-  if (!params.source) {
-    return [guardianApi]
-  }
+  if (!params.source) return [defaultProvider]
+  if (params.source === 'all') return Object.values(newsProviders)
 
-  if (params.source === 'all') {
-    return Object.values(providers)
-  }
-
-  return [providers[params.source]]
-}
-
-const getErrorMessage = (error: unknown) => {
-  if (error instanceof Error) {
-    return error.message
-  }
-
-  return 'Unknown error'
+  return [newsProviders[params.source]]
 }
 
 export const getNews = async (
   params: NewsSearchParams,
   signal?: AbortSignal,
 ): Promise<Article[]> => {
-  const providers = getEnabledProviders(params)
+  const enabledProviders = getEnabledProviders(params)
 
   const results = await Promise.allSettled(
-    providers.map(async provider => ({
+    enabledProviders.map(async provider => ({
       source: provider.source,
       articles: await provider.search(params, signal),
     })),
@@ -51,19 +45,14 @@ export const getNews = async (
     result.status === 'fulfilled' ? result.value.articles : [],
   )
 
-  const errors = results.filter(
-    (result): result is PromiseRejectedResult => result.status === 'rejected',
-  )
+  const errors = results.filter(isRejectedResult)
 
-  errors.forEach(error => {
+  for (const error of errors) {
     console.error('[News provider failed]', error.reason)
-  })
+  }
 
   if (!articles.length && errors.length) {
-    throw new Error(
-      errors.map(error => getErrorMessage(error.reason)).join(', ') ||
-        'Failed to fetch news articles',
-    )
+    throw new Error(errors.map(error => getErrorMessage(error.reason)).join(', '))
   }
 
   return normalizeArticles(articles)

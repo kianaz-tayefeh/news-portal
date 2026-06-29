@@ -1,4 +1,4 @@
-import type { Article } from '@/types/news.type'
+import type { Article, NewsSearchParams } from '@/types/news.type'
 
 export function cleanParams<T extends Record<string, unknown>>(params: T) {
   return Object.fromEntries(
@@ -23,3 +23,6 @@ export function normalizeArticles(articles: Article[]) {
 export const getSearchQuery = (query?: string) => {
   return query?.trim() || 'latest news'
 }
+
+export const isNewsApiCategorySearch = (params: NewsSearchParams) =>
+  params.source === 'newsapi' && Boolean(params.category)

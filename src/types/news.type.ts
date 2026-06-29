@@ -30,8 +30,6 @@ export type Article = {
   imageUrl: string
   publishedAt: string
   source: NewsProvider
-  sourceName: string
-  author: string
   category: string | null
   tags: string[]
 }

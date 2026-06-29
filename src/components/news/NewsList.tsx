@@ -1,6 +1,5 @@
+import { NewsCard } from '@/components/news/NewsCard'
 import type { Article } from '@/types/news.type'
-
-import { NewsCard } from './NewsCard'
 
 type NewsListProps = {
   articles: Article[]

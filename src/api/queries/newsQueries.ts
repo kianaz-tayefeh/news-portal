@@ -9,5 +9,6 @@ export function useSearchArticles(params: NewsSearchParams) {
     queryKey: newsQueryKeys.search(params),
     queryFn: ({ signal }) => getNews(params, signal),
     placeholderData: keepPreviousData,
+    retry: false,
   })
 }

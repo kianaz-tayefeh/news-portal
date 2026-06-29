@@ -1,39 +1,37 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useSearchArticles } from '@/api/queries/newsQueries'
 import { Route } from '@/routes/news/index'
 import type { NewsSearchParams } from '@/types/news.type'
 
 import { useDebouncedValue } from './useDebounce'
 
-const normalizeQuery = (value?: string) => {
-  const query = value?.trim()
-  return query || undefined
-}
-
-export function useNews() {
+export const useNews = () => {
   const filters = Route.useSearch()
   const navigate = Route.useNavigate()
 
-  const [searchInput, setSearchInput] = useState(filters.query ?? '')
-  const debouncedSearch = useDebouncedValue(searchInput, 500)
+  const [searchInput, setSearchInput] = useState(filters.query)
+  const debouncedSearch = useDebouncedValue(searchInput)
 
-  const queryParams = {
-    ...filters,
-    query: normalizeQuery(filters.query),
-    page: filters.page ?? 1,
-  }
+  const queryParams: NewsSearchParams = useMemo(
+    () => ({
+      ...filters,
+      query: filters.query.trim(),
+      page: filters.page ?? 1,
+    }),
+    [filters],
+  )
 
   const articlesQuery = useSearchArticles(queryParams)
+  const hasNextPage = articlesQuery.data?.length === 12
 
   const updateFilters = (nextFilters: Partial<NewsSearchParams>) => {
-    const hasQueryUpdate = Object.prototype.hasOwnProperty.call(nextFilters, 'query')
-    const hasPageUpdate = Object.prototype.hasOwnProperty.call(nextFilters, 'page')
+    const hasPageUpdate = nextFilters.page !== undefined
 
     navigate({
-      search: previous => ({
-        ...previous,
+      search: previousFilters => ({
+        ...previousFilters,
         ...nextFilters,
-        query: hasQueryUpdate ? normalizeQuery(nextFilters.query) : previous.query,
+        query: (nextFilters.query ?? previousFilters.query).trim(),
         page: hasPageUpdate ? nextFilters.page : 1,
       }),
       replace: true,
@@ -41,24 +39,20 @@ export function useNews() {
   }
 
   useEffect(() => {
-    const nextQuery = normalizeQuery(debouncedSearch)
-    const currentQuery = normalizeQuery(filters.query)
+    const nextQuery = debouncedSearch.trim()
+    const currentQuery = filters.query.trim()
 
-    if (nextQuery === currentQuery) return
-
-    updateFilters({ query: nextQuery })
+    if (nextQuery !== currentQuery) {
+      updateFilters({ query: nextQuery })
+    }
   }, [debouncedSearch, filters.query])
 
   const nextPage = () => {
-    updateFilters({
-      page: (filters.page ?? 1) + 1,
-    })
+    updateFilters({ page: queryParams.page + 1 })
   }
 
   const previousPage = () => {
-    updateFilters({
-      page: Math.max(1, (filters.page ?? 1) - 1),
-    })
+    updateFilters({ page: Math.max(1, queryParams.page - 1) })
   }
 
   return {
@@ -66,6 +60,7 @@ export function useNews() {
     searchInput,
     setSearchInput,
     articles: articlesQuery.data ?? [],
+    hasNextPage,
     isLoading: articlesQuery.isLoading,
     isFetching: articlesQuery.isFetching,
     isError: articlesQuery.isError,

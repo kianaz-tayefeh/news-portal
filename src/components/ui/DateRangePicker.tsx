@@ -13,10 +13,16 @@ import { getDateRangeLabel, QUICK_RANGES, toDateRange, toDateRangeValue } from '
 type DateRangePickerProps = {
   fromDate?: string
   toDate?: string
+  disabled?: boolean
   onChange: (value: { fromDate?: string; toDate?: string }) => void
 }
 
-export function DateRangePicker({ fromDate, toDate, onChange }: DateRangePickerProps) {
+export function DateRangePicker({
+  fromDate,
+  toDate,
+  disabled = false,
+  onChange,
+}: DateRangePickerProps) {
   const [open, setOpen] = React.useState(false)
   const [draftRange, setDraftRange] = React.useState<DateRange>()
 
@@ -56,14 +62,17 @@ export function DateRangePicker({ fromDate, toDate, onChange }: DateRangePickerP
       <Button
         type='button'
         variant='outline'
-        className='h-11 w-full justify-between bg-white text-gray-900'
-        onClick={() => setOpen(prev => !prev)}
+        disabled={disabled}
+        className='h-11 w-full justify-between bg-white text-gray-900 disabled:cursor-not-allowed disabled:opacity-60'
+        onClick={() => {
+          if (!disabled) setOpen(prev => !prev)
+        }}
       >
         <span className={cn(!fromDate && 'text-gray-400')}>{label}</span>
         <Calendar className='h-5 w-5' />
       </Button>
 
-      {open && (
+      {open && !disabled && (
         <div className='absolute z-20 mt-2 w-[320px] rounded-lg border border-[var(--border)] bg-white p-3 shadow-lg'>
           <div className='mb-3 grid grid-cols-2 gap-2'>
             {QUICK_RANGES.map(({ label, getRange }) => (

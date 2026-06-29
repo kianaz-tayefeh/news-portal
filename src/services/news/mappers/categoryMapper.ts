@@ -1,6 +1,6 @@
-import type { NewsCategory, NewsSource } from '@/types/news.type'
+import type { NewsCategory, NewsProvider } from '@/types/news.type'
 
-const categoryMap: Record<NewsSource, Partial<Record<NewsCategory, string>>> = {
+const categoryMap = {
   guardian: {
     business: 'business',
     technology: 'technology',
@@ -36,10 +36,10 @@ const categoryMap: Record<NewsSource, Partial<Record<NewsCategory, string>>> = {
     nation: 'general',
     general: 'general',
   },
-}
+} satisfies Record<NewsProvider, Partial<Record<NewsCategory, string>>>
 
-export const getProviderCategory = (source: NewsSource, category?: NewsCategory) => {
+export const getProviderCategory = (provider: NewsProvider, category?: NewsCategory) => {
   if (!category) return undefined
 
-  return categoryMap[source][category] || undefined
+  return categoryMap[provider][category] || undefined
 }

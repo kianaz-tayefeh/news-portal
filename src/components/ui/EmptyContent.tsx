@@ -14,7 +14,7 @@ export const EmptyContent: React.FC<EmptyContentProps> = ({
   const color = variant === 'error' ? 'danger' : 'primary'
 
   return (
-    <div className='mx-auto mt-10 flex max-w-md flex-col items-center  p-8 text-center  '>
+    <div className='mx-auto mt-10 flex max-w-md flex-col items-center  p-8 text-center'>
       <Text variant='h3' color={color} className='mb-2'>
         {title}
       </Text>

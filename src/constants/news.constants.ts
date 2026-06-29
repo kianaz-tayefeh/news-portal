@@ -1,5 +1,6 @@
 import type { NewsSearchParams } from '@/types/news.type'
 
+export const NEWS_SOURCES = ['guardian', 'nytimes', 'newsapi', 'all'] as const
 export const NEWS_CATEGORIES = [
   'business',
   'technology',
@@ -11,8 +12,6 @@ export const NEWS_CATEGORIES = [
   'world',
   'nation',
 ] as const
-
-export const NEWS_SOURCES = ['guardian', 'nytimes', 'newsapi', 'all'] as const
 
 export const DEFAULT_PARAMS: NewsSearchParams = {
   query: '',

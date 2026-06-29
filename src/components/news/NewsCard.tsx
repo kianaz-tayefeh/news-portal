@@ -1,8 +1,7 @@
 import { Badge, Card, CardContent, CardFooter, Text } from '@/components/ui'
+import { Tooltip } from '@/components/ui/Tooltip'
 import type { Article } from '@/types/news.type'
 import { Calendar, ExternalLink } from 'lucide-react'
-
-import { Tooltip } from '../ui/Tooltip'
 
 type NewsCardProps = {
   article: Article
