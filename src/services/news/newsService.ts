@@ -30,44 +30,41 @@ const getErrorMessage = (error: unknown) => {
   return 'Unknown error'
 }
 
-export async function getNews(params: NewsSearchParams, signal?: AbortSignal): Promise<Article[]> {
-  const enabledProviders = getEnabledProviders(params)
+export const getNews = async (
+  params: NewsSearchParams,
+  signal?: AbortSignal,
+): Promise<Article[]> => {
+  const providers = getEnabledProviders(params)
 
   const results = await Promise.allSettled(
-    enabledProviders.map(async provider => {
-      if (signal?.aborted) {
-        throw new DOMException('Request aborted', 'AbortError')
-      }
-
-      return {
-        source: provider.source,
-        articles: await provider.search(params, signal),
-      }
-    }),
+    providers.map(async provider => ({
+      source: provider.source,
+      articles: await provider.search(params, signal),
+    })),
   )
 
   if (signal?.aborted) {
     throw new DOMException('Request aborted', 'AbortError')
   }
 
-  const successfulArticles = results.flatMap(result =>
+  const articles = results.flatMap(result =>
     result.status === 'fulfilled' ? result.value.articles : [],
   )
 
-  const failedResults = results.filter(
+  const errors = results.filter(
     (result): result is PromiseRejectedResult => result.status === 'rejected',
   )
 
-  const realFailedResults = failedResults.filter(result => {
-    return getErrorMessage(result.reason) !== 'canceled'
+  errors.forEach(error => {
+    console.error('[News provider failed]', error.reason)
   })
 
-  if (!successfulArticles.length && realFailedResults.length) {
+  if (!articles.length && errors.length) {
     throw new Error(
-      realFailedResults.map(result => getErrorMessage(result.reason)).join(', ') ||
+      errors.map(error => getErrorMessage(error.reason)).join(', ') ||
         'Failed to fetch news articles',
     )
   }
 
-  return normalizeArticles(successfulArticles)
+  return normalizeArticles(articles)
 }

@@ -1,6 +1,7 @@
 import { NewsFilters } from '@/components/news/NewsFilters'
 import { NewsList } from '@/components/news/NewsList'
 import { NewsPagination } from '@/components/news/NewsPagination'
+import { EmptyContent } from '@/components/ui'
 import { useNews } from '@/hooks/useNews'
 import { Loader } from 'lucide-react'
 
@@ -19,6 +20,7 @@ export default function NewsPage() {
   } = useNews()
 
   if (isLoading) return <Loader className='mx-auto mt-8 h-8 w-8 animate-spin' />
+  const hasArticles = articles.length > 0
 
   return (
     <main className='mx-auto min-h-screen max-w-6xl px-4 py-8'>
@@ -32,14 +34,20 @@ export default function NewsPage() {
       />
 
       {isError ? (
-        <p className='p-8 text-center'>Could not load articles. Try another search or source.</p>
+        <EmptyContent
+          title='Could not load articles'
+          message='Try another search or source.'
+          variant='error'
+        />
       ) : isFetching ? (
         <Loader className='mx-auto mt-8 h-8 w-8 animate-spin' />
-      ) : (
+      ) : hasArticles ? (
         <NewsList articles={articles} />
+      ) : (
+        <EmptyContent message='No articles found for your filters.' />
       )}
 
-      {!isError && (
+      {!isError && hasArticles && (
         <NewsPagination page={filters.page} onNext={nextPage} onPrevious={previousPage} />
       )}
     </main>

@@ -69,6 +69,7 @@ export function useNews() {
     isLoading: articlesQuery.isLoading,
     isFetching: articlesQuery.isFetching,
     isError: articlesQuery.isError,
+    error: articlesQuery.error,
     updateFilters,
     nextPage,
     previousPage,
