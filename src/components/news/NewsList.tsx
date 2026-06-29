@@ -1,13 +1,15 @@
 import { NewsCard } from '@/components/news/NewsCard'
 import type { Article } from '@/types/news.type'
 
+import { EmptyContent } from '../ui'
+
 type NewsListProps = {
   articles: Article[]
 }
 
 export function NewsList({ articles }: NewsListProps) {
   if (!articles.length) {
-    return <p>No news articles found.</p>
+    return <EmptyContent message='Try adjusting your search or filters.' />
   }
 
   return (

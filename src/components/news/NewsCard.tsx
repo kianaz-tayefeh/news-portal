@@ -1,4 +1,4 @@
-import { Badge, Card, CardContent, CardFooter, Text } from '@/components/ui'
+import { Badge, Card, CardContent, CardFooter, Image, Text } from '@/components/ui'
 import { Tooltip } from '@/components/ui/Tooltip'
 import type { Article } from '@/types/news.type'
 import { Calendar, ExternalLink } from 'lucide-react'
@@ -8,39 +8,24 @@ type NewsCardProps = {
 }
 
 export function NewsCard({ article }: NewsCardProps) {
+  const [firstTag, ...remainingTags] = article.tags
+  const publishedDate = new Date(article.publishedAt).toLocaleDateString()
+
   return (
     <Card className='flex h-full flex-col'>
-      <div className='overflow-hidden rounded-t-lg'>
-        {article.imageUrl ? (
-          <img
-            src={article.imageUrl}
-            alt={article.title}
-            loading='lazy'
-            className='h-48 w-full object-cover'
-            onError={event => {
-              event.currentTarget.src = '/placeholder-news.jpg'
-            }}
-          />
-        ) : (
-          <div className='flex h-48 w-full items-center justify-center bg-gray-100 text-sm text-gray-400'>
-            No image available
-          </div>
-        )}
-      </div>
+      <Image title={article.title} imageUrl={article.imageUrl} />
 
       <CardContent className='flex flex-1 flex-col gap-4 p-5'>
         <div className='flex flex-wrap gap-2'>
           {article.category && <Badge variant='success'>{article.category}</Badge>}
 
-          {article.tags.slice(0, 1).map(tag => (
-            <Badge key={tag}>{tag}</Badge>
-          ))}
+          {firstTag && <Badge>{firstTag}</Badge>}
 
-          {article.tags.length > 1 && (
+          {remainingTags.length > 0 && (
             <Tooltip
               content={
                 <div className='flex flex-wrap gap-2'>
-                  {article.tags.slice(1).map(tag => (
+                  {remainingTags.map(tag => (
                     <Badge key={tag} className='text-[10px]'>
                       {tag}
                     </Badge>
@@ -48,7 +33,7 @@ export function NewsCard({ article }: NewsCardProps) {
                 </div>
               }
             >
-              <Badge className='cursor-pointer'>+{article.tags.length - 1}</Badge>
+              <Badge className='cursor-pointer'>+{remainingTags.length}</Badge>
             </Tooltip>
           )}
         </div>
@@ -72,10 +57,12 @@ export function NewsCard({ article }: NewsCardProps) {
         <div className='mt-auto space-y-2 text-sm text-gray-500'>
           <div className='flex items-center gap-2'>
             <Calendar size={16} />
-            <span>{new Date(article.publishedAt).toLocaleDateString()}</span>
+            <span>{publishedDate}</span>
           </div>
 
-          <p className='truncate'>{article.source}</p>
+          <Text variant='small' color='muted' className='truncate'>
+            {article.source}
+          </Text>
         </div>
       </CardContent>
 

@@ -1,14 +1,5 @@
 import type { Article, NewsSearchParams } from '@/types/news.type'
 
-export function cleanParams<T extends Record<string, unknown>>(params: T) {
-  return Object.fromEntries(
-    Object.entries(params).filter(([, value]) => {
-      if (value === undefined || value === null || value === '') return false
-      return true
-    }),
-  )
-}
-
 export function normalizeArticles(articles: Article[]) {
   return articles
     .filter(article => article.title && article.url)
