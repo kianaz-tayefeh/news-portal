@@ -1,4 +1,5 @@
 import { PAGE_SIZE } from '@/constants/common.constants'
+import { ALL_SOURCES } from '@/constants/news.constants'
 import type { Article, NewsProvider, NewsSearchParams, NewsSourceApi } from '@/types/news.type'
 import { getDefaultNewsProviders } from '@/utils/defaultSources'
 import { getErrorMessage } from '@/utils/error'
@@ -19,7 +20,7 @@ const isRejectedResult = <T>(result: PromiseSettledResult<T>): result is Promise
 
 const getEnabledProviders = (params: NewsSearchParams): NewsSourceApi[] => {
   if (!params.source) return getDefaultNewsProviders().map(provider => newsProviders[provider])
-  if (params.source === 'all') return Object.values(newsProviders)
+  if (params.source === ALL_SOURCES) return Object.values(newsProviders)
 
   return [newsProviders[params.source]]
 }

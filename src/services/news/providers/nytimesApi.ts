@@ -1,9 +1,9 @@
 import { nyTimesClient } from '@/api/clients/apiClients.ts/apiClient'
+import { SOURCES_NAMES } from '@/constants/news.constants'
+import { getProviderCategory } from '@/services/news/mappers/categoryMapper'
+import { mapNyTimesArticles, type NyTimesArticle } from '@/services/news/mappers/nyTimesMapper'
 import type { NewsSourceApi } from '@/types/news.type'
 import { getPageSize } from '@/utils/common'
-
-import { getProviderCategory } from '../mappers/categoryMapper'
-import { mapNyTimesArticles, type NyTimesArticle } from '../mappers/nyTimesMapper'
 
 type NyTimesResponse = {
   response?: {
@@ -20,10 +20,10 @@ const buildNyTimesFilterQuery = (category?: string) => {
 }
 
 export const nytimesApi: NewsSourceApi = {
-  source: 'nytimes',
+  source: SOURCES_NAMES.nytimes,
 
   async search(params, signal) {
-    const category = getProviderCategory('nytimes', params.category)
+    const category = getProviderCategory(SOURCES_NAMES.nytimes, params.category)
 
     const response = await nyTimesClient.get<NyTimesResponse>({
       url: '/articlesearch.json',

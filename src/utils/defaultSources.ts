@@ -1,9 +1,9 @@
-import { NEWS_PROVIDERS } from '@/constants/news.constants'
+import { NEWS_PROVIDERS, SOURCES_NAMES } from '@/constants/news.constants'
 import type { NewsProvider } from '@/types/news.type'
 import { getStorage, setStorage } from '@/utils/storage'
 
-export const DEFAULT_NEWS_PROVIDERS: NewsProvider[] = ['guardian']
-export const DEFAULT_NEWS_PROVIDERS_STORAGE_KEY = 'news-portal.default-news-providers'
+const DEFAULT_NEWS_PROVIDERS: NewsProvider[] = [SOURCES_NAMES.guardian]
+const DEFAULT_NEWS_PROVIDERS_STORAGE_KEY = 'news-portal.default-news-providers'
 
 const isNewsProvider = (value: unknown): value is NewsProvider =>
   typeof value === 'string' && NEWS_PROVIDERS.includes(value as NewsProvider)

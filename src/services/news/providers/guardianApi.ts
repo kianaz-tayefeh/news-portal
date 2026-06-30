@@ -1,9 +1,9 @@
 import { guardianClient } from '@/api/clients/apiClients.ts/apiClient'
+import { SOURCES_NAMES } from '@/constants/news.constants'
+import { getProviderCategory } from '@/services/news/mappers/categoryMapper'
+import { mapGuardianArticles, type GuardianArticle } from '@/services/news/mappers/guardianMapper'
 import type { NewsSourceApi } from '@/types/news.type'
 import { getPageSize } from '@/utils/common'
-
-import { getProviderCategory } from '../mappers/categoryMapper'
-import { mapGuardianArticles, type GuardianArticle } from '../mappers/guardianMapper'
 
 type GuardianResponse = {
   response?: {
@@ -12,10 +12,10 @@ type GuardianResponse = {
 }
 
 export const guardianApi: NewsSourceApi = {
-  source: 'guardian',
+  source: SOURCES_NAMES.gaurdian,
 
   async search(params, signal) {
-    const category = getProviderCategory('guardian', params.category)
+    const category = getProviderCategory(SOURCES_NAMES.gaurdian, params.category)
 
     const response = await guardianClient.get<GuardianResponse>({
       url: '/search',

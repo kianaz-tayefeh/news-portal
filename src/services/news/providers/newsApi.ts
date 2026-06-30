@@ -1,21 +1,21 @@
 import { newsApiClient } from '@/api/clients/apiClients.ts/apiClient'
+import { SOURCES_NAMES } from '@/constants/news.constants'
+import { getProviderCategory } from '@/services/news/mappers/categoryMapper'
+import { mapNewsApiArticles, type NewsApiArticle } from '@/services/news/mappers/newsMapper'
 import type { NewsSourceApi } from '@/types/news.type'
 import { getPageSize } from '@/utils/common'
 import { getSearchQuery } from '@/utils/news'
-
-import { getProviderCategory } from '../mappers/categoryMapper'
-import { mapNewsApiArticles, type NewsApiArticle } from '../mappers/newsMapper'
 
 type NewsApiResponse = {
   articles: NewsApiArticle[]
 }
 
 export const newsApi: NewsSourceApi = {
-  source: 'newsapi',
+  source: SOURCES_NAMES.newsapi,
 
   async search(params, signal) {
     const requestedCategory = params.category
-    const category = getProviderCategory('newsapi', requestedCategory)
+    const category = getProviderCategory(SOURCES_NAMES.newsapi, requestedCategory)
     const hasCategory = Boolean(category)
     const hasDateRange = Boolean(params.fromDate || params.toDate)
 
