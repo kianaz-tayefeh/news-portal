@@ -1,7 +1,5 @@
-import { NewsFilters } from '@/components/news/NewsFilters'
-import { NewsList } from '@/components/news/NewsList'
-import { EmptyContent } from '@/components/ui'
-import { Pagination } from '@/components/ui/Pagination'
+import { NewsFilters, NewsList } from '@/components/organisms'
+import { EmptyContent, Pagination } from '@/components/ui'
 import { useNews } from '@/hooks/useNews'
 import { Loader } from 'lucide-react'
 

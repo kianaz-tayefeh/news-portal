@@ -1,6 +1,7 @@
-import type { NewsSearchParams } from '@/types/news.type'
+import type { NewsSearchParams, SetupSourceOption } from '@/types/news.type'
 
-export const NEWS_SOURCES = ['guardian', 'nytimes', 'newsapi', 'all'] as const
+export const NEWS_PROVIDERS = ['guardian', 'nytimes', 'newsapi'] as const
+export const NEWS_SOURCES = [...NEWS_PROVIDERS, 'all'] as const
 export const NEWS_CATEGORIES = [
   'business',
   'technology',
@@ -32,9 +33,26 @@ export const NEWS_CATEGORY_OPTIONS = [
 ]
 
 export const NEWS_SOURCE_OPTIONS = [
-  { label: 'Default source', value: '' },
   { label: 'All sources', value: 'all' },
   { label: 'The Guardian', value: 'guardian' },
   { label: 'New York Times', value: 'nytimes' },
   { label: 'NewsAPI', value: 'newsapi' },
+]
+
+export const SETUP_SOURCE_OPTIONS: SetupSourceOption[] = [
+  {
+    source: 'guardian',
+    label: 'The Guardian',
+    imageUrl: '/source-logos/guardian.svg',
+  },
+  {
+    source: 'nytimes',
+    label: 'New York Times',
+    imageUrl: '/source-logos/nytimes.svg',
+  },
+  {
+    source: 'newsapi',
+    label: 'NewsAPI',
+    imageUrl: '/source-logos/newsapi.svg',
+  },
 ]

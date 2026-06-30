@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-labelledby="title desc">
+  <title id="title">No image available</title>
+  <desc id="desc">Neutral fallback illustration for news articles without an image.</desc>
+  <rect width="640" height="360" fill="#f3f4f6"/>
+  <rect x="144" y="92" width="352" height="176" rx="18" fill="#e5e7eb"/>
+  <circle cx="236" cy="160" r="32" fill="#9ca3af"/>
+  <path d="M180 236l88-72 64 52 48-40 80 60H180Z" fill="#9ca3af"/>
+  <text x="320" y="300" fill="#6b7280" font-family="Arial, sans-serif" font-size="28" text-anchor="middle">No image available</text>
+</svg>

@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useSearchArticles } from '@/api/queries/newsQueries'
+import { PAGE_SIZE } from '@/constants/common.constants'
 import { Route } from '@/routes/news/index'
 import type { NewsSearchParams } from '@/types/news.type'
+import { isNewsApiCategorySearch } from '@/utils/news'
 
 import { useDebouncedValue } from './useDebounce'
 
@@ -12,28 +14,37 @@ export const useNews = () => {
   const [searchInput, setSearchInput] = useState(filters.query)
   const debouncedSearch = useDebouncedValue(searchInput)
 
-  const queryParams: NewsSearchParams = useMemo(
-    () => ({
+  const queryParams: NewsSearchParams = useMemo(() => {
+    const nextParams: NewsSearchParams = {
       ...filters,
       query: filters.query.trim(),
       page: filters.page ?? 1,
-    }),
-    [filters],
-  )
+    }
+
+    return isNewsApiCategorySearch(nextParams)
+      ? { ...nextParams, fromDate: undefined, toDate: undefined }
+      : nextParams
+  }, [filters])
 
   const articlesQuery = useSearchArticles(queryParams)
-  const hasNextPage = articlesQuery.data?.length === 12
+  const hasNextPage = (articlesQuery.data?.length ?? 0) >= PAGE_SIZE
 
   const updateFilters = (nextFilters: Partial<NewsSearchParams>) => {
     const hasPageUpdate = nextFilters.page !== undefined
 
     navigate({
-      search: previousFilters => ({
-        ...previousFilters,
-        ...nextFilters,
-        query: (nextFilters.query ?? previousFilters.query).trim(),
-        page: hasPageUpdate ? nextFilters.page : 1,
-      }),
+      search: previousFilters => {
+        const nextSearch = {
+          ...previousFilters,
+          ...nextFilters,
+          query: (nextFilters.query ?? previousFilters.query).trim(),
+          page: hasPageUpdate ? (nextFilters.page ?? 1) : 1,
+        }
+
+        return isNewsApiCategorySearch(nextSearch)
+          ? { ...nextSearch, fromDate: undefined, toDate: undefined }
+          : nextSearch
+      },
       replace: true,
     })
   }
@@ -45,6 +56,7 @@ export const useNews = () => {
     if (nextQuery !== currentQuery) {
       updateFilters({ query: nextQuery })
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedSearch, filters.query])
 
   const nextPage = () => {

@@ -14,13 +14,23 @@ export const newsApi: NewsSourceApi = {
   source: 'newsapi',
 
   async search(params, signal) {
-    const category = getProviderCategory('newsapi', params.category)
+    const requestedCategory = params.category
+    const category = getProviderCategory('newsapi', requestedCategory)
     const hasCategory = Boolean(category)
+    const hasDateRange = Boolean(params.fromDate || params.toDate)
+
+    if (requestedCategory && !category) {
+      throw new Error(`NewsAPI does not support the "${requestedCategory}" category`)
+    }
+
+    if (hasCategory && hasDateRange) {
+      throw new Error('NewsAPI does not support category searches with date filters')
+    }
 
     const baseParams = {
-      q: getSearchQuery(params.query),
+      q: hasCategory ? params.query.trim() || undefined : getSearchQuery(params.query),
       page: params.page ?? 1,
-      pageSize: getPageSize(params.source),
+      pageSize: getPageSize(),
       language: 'en',
       apiKey: import.meta.env.VITE_NEWS_API_KEY,
     }

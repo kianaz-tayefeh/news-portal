@@ -1,14 +1,13 @@
 import { guardianClient } from '@/api/clients/apiClients.ts/apiClient'
 import type { NewsSourceApi } from '@/types/news.type'
 import { getPageSize } from '@/utils/common'
-import { getSearchQuery } from '@/utils/news'
 
 import { getProviderCategory } from '../mappers/categoryMapper'
 import { mapGuardianArticles, type GuardianArticle } from '../mappers/guardianMapper'
 
 type GuardianResponse = {
-  response: {
-    results: GuardianArticle[]
+  response?: {
+    results?: GuardianArticle[]
   }
 }
 
@@ -22,17 +21,18 @@ export const guardianApi: NewsSourceApi = {
       url: '/search',
       signal,
       params: {
-        q: getSearchQuery(params.query),
+        q: params.query.trim() || undefined,
         'from-date': params.fromDate,
         'to-date': params.toDate,
         section: category,
+        'order-by': 'newest',
         page: params.page ?? 1,
         'show-fields': 'thumbnail,trailText',
-        'page-size': getPageSize(params.source),
+        'page-size': getPageSize(),
         'api-key': import.meta.env.VITE_GUARDIAN_API_KEY,
       },
     })
 
-    return mapGuardianArticles(response.data.response.results ?? [])
+    return mapGuardianArticles(response.data.response?.results ?? [])
   },
 }

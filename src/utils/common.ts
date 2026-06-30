@@ -6,5 +6,4 @@ export function cn(...classes: (string | undefined | null | boolean)[]) {
 
 export const stripHtml = (value?: string) => value?.replace(/<[^>]+>/g, '').trim() ?? ''
 
-export const getPageSize = (source?: string) =>
-  source === 'all' ? PAGE_SIZE.all : PAGE_SIZE.single
+export const getPageSize = () => PAGE_SIZE

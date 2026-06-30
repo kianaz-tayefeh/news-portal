@@ -1,7 +1,7 @@
 export const handleException = (error: Error, errorSource = ''): void => {
   console.error('errorSource', errorSource, error)
 
-  // toast api error or gather them and so on
+  // toast api error or gather them for datadog or sentry for observation
 }
 
 export const getErrorMessage = (error: unknown) =>

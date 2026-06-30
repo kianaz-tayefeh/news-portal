@@ -1,14 +1,13 @@
 import { nyTimesClient } from '@/api/clients/apiClients.ts/apiClient'
 import type { NewsSourceApi } from '@/types/news.type'
 import { getPageSize } from '@/utils/common'
-import { getSearchQuery } from '@/utils/news'
 
 import { getProviderCategory } from '../mappers/categoryMapper'
 import { mapNyTimesArticles, type NyTimesArticle } from '../mappers/nyTimesMapper'
 
 type NyTimesResponse = {
-  response: {
-    docs: NyTimesArticle[] | null
+  response?: {
+    docs?: NyTimesArticle[] | null
   }
 }
 
@@ -30,18 +29,16 @@ export const nytimesApi: NewsSourceApi = {
       url: '/articlesearch.json',
       signal,
       params: {
-        q: getSearchQuery(params.query),
+        q: params.query.trim() || undefined,
         fq: buildNyTimesFilterQuery(category),
         begin_date: formatDate(params.fromDate),
         end_date: formatDate(params.toDate),
         page: params.page ? params.page - 1 : 0,
+        sort: 'newest',
         'api-key': import.meta.env.VITE_NYT_API_KEY,
       },
     })
 
-    return mapNyTimesArticles(response.data.response.docs ?? []).slice(
-      0,
-      getPageSize(params.source),
-    )
+    return mapNyTimesArticles(response.data.response?.docs ?? []).slice(0, getPageSize())
   },
 }

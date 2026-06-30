@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-labelledby="title desc">
+  <title id="title">The Guardian source image</title>
+  <desc id="desc">Blue editorial tile for The Guardian news source.</desc>
+  <rect width="640" height="360" fill="#062b55"/>
+  <circle cx="130" cy="180" r="78" fill="#ffffff" opacity="0.95"/>
+  <path d="M132 102c43 0 78 35 78 78s-35 78-78 78c-24 0-46-11-60-28l44-50h76c0 33-27 60-60 60s-60-27-60-60 27-60 60-60c16 0 31 6 42 17l-20 23c-6-6-14-10-22-10-17 0-30 13-30 30s13 30 30 30c10 0 19-5 25-12h-39v-36h88c-8-35-39-60-74-60Z" fill="#062b55"/>
+  <text x="250" y="166" fill="#ffffff" font-family="Inter, Arial, sans-serif" font-size="48" font-weight="700">The</text>
+  <text x="250" y="224" fill="#ffffff" font-family="Inter, Arial, sans-serif" font-size="56" font-weight="700">Guardian</text>
+</svg>

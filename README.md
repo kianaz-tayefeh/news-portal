@@ -1,7 +1,5 @@
 # News Portal
 
-# News Portal
-
 A responsive news aggregator built with **React**, **TypeScript**, **Vite**, and **TanStack Query**. The application fetches and combines articles from multiple news providers into a single, consistent user experience.
 
 ## Features
@@ -18,6 +16,14 @@ A responsive news aggregator built with **React**, **TypeScript**, **Vite**, and
 - 📄 Pagination
 
 ---
+
+## Running the project
+
+```bash
+pnpm install
+cp .env.example .env
+pnpm run dev
+```
 
 ## News Providers
 
@@ -148,13 +154,6 @@ Implemented optimizations include:
 
 ---
 
-## Running the project
-
-```bash
-pnpm install
-pnpm run dev
-```
-
 ### Configure environment variables
 
 Create a `.env` file:
@@ -186,3 +185,12 @@ Run the container:
 ```bash
 docker run -p 5173:5173 news-portal
 ```
+
+## Test
+
+````bash
+pnpm run test
+pnpm run lint
+pnpm run format
+```bash
+````

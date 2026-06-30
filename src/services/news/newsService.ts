@@ -1,4 +1,6 @@
+import { PAGE_SIZE } from '@/constants/common.constants'
 import type { Article, NewsProvider, NewsSearchParams, NewsSourceApi } from '@/types/news.type'
+import { getDefaultNewsProviders } from '@/utils/defaultSources'
 import { getErrorMessage } from '@/utils/error'
 import { normalizeArticles } from '@/utils/news'
 
@@ -12,13 +14,11 @@ const newsProviders: Record<NewsProvider, NewsSourceApi> = {
   newsapi: newsApi,
 }
 
-const defaultProvider = guardianApi
-
 const isRejectedResult = <T>(result: PromiseSettledResult<T>): result is PromiseRejectedResult =>
   result.status === 'rejected'
 
 const getEnabledProviders = (params: NewsSearchParams): NewsSourceApi[] => {
-  if (!params.source) return [defaultProvider]
+  if (!params.source) return getDefaultNewsProviders().map(provider => newsProviders[provider])
   if (params.source === 'all') return Object.values(newsProviders)
 
   return [newsProviders[params.source]]
@@ -55,5 +55,5 @@ export const getNews = async (
     throw new Error(errors.map(error => getErrorMessage(error.reason)).join(', '))
   }
 
-  return normalizeArticles(articles)
+  return normalizeArticles(articles).slice(0, PAGE_SIZE)
 }

@@ -38,3 +38,9 @@ export type NewsSourceApi = {
   source: NewsProvider
   search: (params: NewsSearchParams, signal?: AbortSignal) => Promise<Article[]>
 }
+
+export type SetupSourceOption = {
+  source: NewsProvider
+  label: string
+  imageUrl: string
+}
